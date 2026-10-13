@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Princess Aneeqa 👑</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Georgia', serif;
+    background: #0a0014;
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: white;
+    text-align: center;
+  }
+  
+  /* ==== OPENING SCREEN ==== */
+  #opening {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle, #4a148c, #0a0014);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 1.2s;
+  }
+  #opening h2 {
+    font-size: 1.4rem;
+    color: #ffd700;
+    margin-bottom: 30px;
+    animation: fadeInOut 2s infinite;
+  }
+  @keyframes fadeInOut {
+    0%,100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+  #cake {
+    font-size: 120px;
+    cursor: pointer;
+    animation: bounce 1.5s ease infinite;
+    filter: drop-shadow(0 0 30px #ffd700);
+    transition: 0.5s;
+  }
+  #cake:active { transform: scale(1.2); }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+  #opening.hide { opacity: 0; pointer-events: none; }
+  
+  /* ==== CANVAS FIREWORKS ==== */
+  #fireworks {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+  
+  /* ==== BACKGROUND ==== */
+  .bg-gradient {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #2b0a3d, #6a1b9a, #c2185b, #2b0a3d);
+    background-size: 400% 400%;
+    animation: bgMove 15s ease infinite;
+    z-index: 0;
+  }
+  @keyframes bgMove {
+    0%,100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  
+  .stars-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .star {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 2s infinite;
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: 0.2; }
+    50% { opacity: 1; }
+  }
+  
+  /* ==== MAIN CONTENT ==== */
+  .container {
+    position: relative;
+    z-index: 10;
+    padding: 40px 20px 60px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .crown {
+    font-size: 70px;
+    animation: bounce 1.5s ease infinite;
+    filter: drop-shadow(0 0 25px gold);
+  }
+  
+  .subtitle {
+    font-size: 0.85rem;
+    color: #ff80ab;
+    letter-spacing: 4px;
+    margin: 15px 0;
+    font-style: italic;
+  }
+  
+  .princess-name {
+    font-size: 2.2rem;
+    color: #ffd700;
+    font-style: italic;
+    text-shadow: 0 0 20px #ff4081, 0 0 40px #ff4081;
+    margin: 10px 0 20px;
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+  }
+  
+  h1 {
+    font-size: 1.9rem;
+    background: linear-gradient(90deg, #ffd700, #ff80ab, #ffd700, #ff80ab);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 300% auto;
+    animation: shine 4s linear infinite;
+    margin: 15px 0 30px;
+  }
+  @keyframes shine {
+    to { background-position: 300% center; }
+  }
+  
+  /* ==== PHOTO SLIDESHOW ==== */
+  .slideshow {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    margin: 0 auto 25px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 5px solid #ffd700;
+    box-shadow: 0 0 50px #ff4081, inset 0 0 30px rgba(0,0,0,0.5);
+    background: linear-gradient(135deg, #ff4081, #ffd700);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 100px;
+    animation: pulse 2s ease infinite;
+  }
+  .slideshow img {
+    position: absolute;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1.5s;
+  }
+  .slideshow img.active { opacity: 1; }
+  .slideshow .placeholder {
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* ==== CARD ==== */
+  .card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(255,215,0,0.5);
+    border-radius: 25px;
+    padding: 30px 22px;
+    margin: 20px 0;
+    box-shadow: 0 0 50px rgba(255,64,129,0.4);
+  }
+  
+  .message {
+    font-size: 1.05rem;
+    line-height: 2;
+    color: #ffe4e1;
+    min-height: 80px;
+  }
+  
+  .cursor-blink {
+    display: inline-block;
+    width: 2px;
+    height: 18px;
+    background: #ffd700;
+    animation: blink 0.8s infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+  @keyframes blink {
+    0%,50% { opacity: 1; }
+    51%,100% { opacity: 0; }
+  }
+  
+  /* ==== COUNTDOWN ==== */
+  .countdown {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 25px 0;
+  }
+  .count-box {
+    background: rgba(255,215,0,0.15);
+    border: 1px solid #ffd700;
+    border-radius: 15px;
+    padding: 12px 10px;
+    min-width: 70px;
+  }
+  .count-num {
+    font-size: 1.6rem;
+    color: #ffd700;
+    font-weight: bold;
+  }
+  .count-label {
+    font-size: 0.7rem;
+    color: #ff80ab;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+  
+  /* ==== BUTTONS ==== */
+  .btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff4081, #ffd700);
+    color: #2b0a3d;
+    padding: 14px 30px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 50px;
+    margin: 8px 4px 0;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(255,64,129,0.5);
+    transition: 0.3s;
+    font-family: inherit;
+  }
+  .btn:active { transform: scale(0.95); }
+  
+  /* ==== SURPRISES ==== */
+  .surprise-box {
+    display: none;
+    margin-top: 20px;
+    padding: 25px 20px;
+    background: rgba(255,215,0,0.12);
+    border: 2px dashed #ffd700;
+    border-radius: 20px;
+    font-size: 1.05rem;
+    color: #ffd700;
+    line-height: 1.9;
+    animation: pop 0.6s ease;
+  }
+  @keyframes pop {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  
+  .footer {
+    margin-top: 40px;
+    font-size: 0.85rem;
+    color: #ff80ab;
+    letter-spacing: 2px;
+  }
+  
+  /* ==== HEART CURSOR TRAIL ==== */
+  .trail-heart {
+    position: fixed;
+    font-size: 20px;
+    pointer-events: none;
+    z-index: 999;
+    animation: trailFade 1.2s ease-out forwards;
+  }
+  @keyframes trailFade {
+    0% { transform: scale(1) translateY(0); opacity: 1; }
+    100% { transform: scale(0.3) translateY(-60px); opacity: 0; }
+  }
+  
+  /* ==== FLOATING HEARTS BG ==== */
+  .float-heart {
+    position: fixed;
+    animation: rise 9s linear infinite;
+    pointer-events: none;
+    z-index: 2;
+  }
+  @keyframes rise {
+    0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+    20% { opacity: 1; }
+    100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- OPENING SCREEN -->
+<div id="opening">
+  <h2>Tap the Cake to Open 🎂</h2>
+  <div id="cake" onclick="openGift()">🎂</div>
+</div>
+
+<!-- BACKGROUND -->
+<div class="bg-gradient"></div>
+<div class="stars-layer" id="stars"></div>
+<canvas id="fireworks"></canvas>
+
+<!-- MAIN CONTENT -->
+<div class="container" id="main">
+  
+  <div class="crown">👑</div>
+  <div class="subtitle">✨ MERI DUNIYA, MERI JAAN ✨</div>
+  <div class="princess-name">Meri Biwi Aneeqa 🫀</div>
+  <h1>🎉 Happy Birthday Meri Jaan 🎂</h1>
+  
+  <!-- PHOTO SLIDESHOW -->
+  <div class="slideshow" id="slideshow">
+    <span class="placeholder">🫅🏻</span>
+  </div>
+  
+  <!-- COUNTDOWN -->
+  <div class="countdown">
+    <div class="count-box"><div class="count-num" id="cd-days">00</div><div class="count-label">DAYS</div></div>
+    <div class="count-box"><div class="count-num" id="cd-hours">00</div><div class="count-label">HOURS</div></div>
+    <div class="count-box"><div class="count-num" id="cd-mins">00</div><div class="count-label">MINS</div></div>
+    <div class="count-box"><div class="count-num" id="cd-secs">00</div><div class="count-label">SECS</div></div>
+  </div>
+  
+  <!-- MESSAGE CARD -->
+  <div class="card">
+    <p class="message" id="typing"></p>
+  </div>
+  
+  <!-- BUTTONS -->
+  <button class="btn" onclick="showSurprise('s1')">🎁 Surprise 1</button>
+  <button class="btn" onclick="showSurprise('s2')">💌 Love Letter</button>
+  <button class="btn" onclick="showSurprise('s3')">🌹 Special Dua</button>
+  <button class="btn" onclick="playMusic()">🎵 Music</button>
+  
+  <!-- SURPRISES -->
+  <div class="surprise-box" id="s1">
+    💝 <b>Meri Jaan Aneeqa,</b><br><br>
+    Aap meri zindagi ka sabse anmol tohfa hain. 👑<br>
+    Aap mera ghar hain, meri panah hain. 🏡💖<br><br>
+    <b style="color:#fff">Aap meri duniya hain, aur main aapka, hamesha. 🫀</b>
+  </div>
+  
+  <div class="surprise-box" id="s2">
+    💌 <b>Meri Jaan Ke Naam Ek Khat:</b><br><br>
+    "Aneeqa,<br><br>
+    Jab main pehli baar aapko dekha tha,<br>
+    mujhe nahi pata tha ke meri zindagi badal jayegi.<br>
+    Aapki muskurahat ne mujhe jeena sikha diya.<br><br>
+    Aaj main wada karta hoon —<br>
+    aapki har khushi mein saath dunga,<br>
+    har mushkil mein sahara banaunga.<br><br>
+    <b style="color:#fff">Aap meri jaan hain. 🌹</b><br>
+    — Aapka Shohar"
+  </div>
+  
+  <div class="surprise-box" id="s3">
+    🤲 <b>Meri Dua Aapke Liye:</b><br><br>
+    "Ya Allah,<br>
+    Meri biwi Aneeqa ko<br>
+    har khushi se nawaz,<br>
+    uski har tamanna poori kar,<br>
+    uski muskurahat kabhi kam na ho,<br>
+    aur hamesha meri zindagi mein usay salaamat rakh.<br><br>
+    <b style="color:#fff">Ameen. 🤲✨</b>"
+  </div>
+  
+  <div class="footer">— Made with 🫀 for Meri Jaan Aneeqa —</div>
+  
+</div>
+
+<script>
+  /* ===== OPENING ===== */
+  function openGift() {
+    document.getElementById('opening').classList.add('hide');
+    setTimeout(() => {
+      document.getElementById('opening').style.display = 'none';
+      startFireworks();
+      startTyping();
+    }, 1000);
+  }
+  
+  /* ===== BACKGROUND STARS ===== */
+  const starsBox = document.getElementById('stars');
+  for (let i = 0; i < 60; i++) {
+    let s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.top = Math.random() * 100 + 'vh';
+    s.style.animationDelay = Math.random() * 2 + 's';
+    starsBox.appendChild(s);
+  }
+  
+  /* ===== FLOATING HEARTS ===== */
+  for (let i = 0; i < 15; i++) {
+    let h = document.createElement('div');
+    h.className = 'float-heart';
+    h.innerHTML = ['❤️','💖','💕','💗','💝','🫀','👑','🌹'][Math.floor(Math.random()*8)];
+    h.style.left = Math.random() * 100 + 'vw';
+    h.style.animationDelay = Math.random() * 9 + 's';
+    h.style.fontSize = (15 + Math.random() * 20) + 'px';
+    document.body.appendChild(h);
+  }
+  
+  /* ===== HEART CURSOR TRAIL ===== */
+  document.addEventListener('touchmove', function(e) {
+    let x = e.touches[0].clientX;
+    let y = e.touches[0].clientY;
+    if (Math.random() > 0.7) createTrailHeart(x, y);
+  });
+  document.addEventListener('mousemove', function(e) {
+    if (Math.random() > 0.8) createTrailHeart(e.clientX, e.clientY);
+  });
+  function createTrailHeart(x, y) {
+    let h = document.createElement('div');
+    h.className = 'trail-heart';
+    h.innerHTML = ['❤️','💖','🫀','💕'][Math.floor(Math.random()*4)];
+    h.style.left = x + 'px';
+    h.style.top = y + 'px';
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 1200);
+  }
+  
+  /* ===== FIREWORKS ===== */
+  const canvas = document.getElementById('fireworks');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  
+  function createFirework() {
+    let x = Math.random() * canvas.width;
+    let y = Math.random() * canvas.height * 0.6 + 50;
+    let color = `hsl(${Math.random()*360}, 100%, 60%)`;
+    let count = 30 + Math.random() * 20;
+    for (let i = 0; i < count; i++) {
+      let angle = (Math.PI * 2 / count) * i;
+      let speed = 2 + Math.random() * 3;
+      particles.push({
+        x: x, y: y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 100,
+        color: color
+      });
+    }
+  }
+  
+  function animate() {
+    ctx.fillStyle = 'rgba(10,0,20,0.15)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    particles.forEach((p, i) => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.05;
+      p.life--;
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.life / 100;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+      ctx.fill();
+      if (p.life <= 0) particles.splice(i, 1);
+    });
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(animate);
+  }
+  animate();
+  
+  function startFireworks() {
+    setInterval(createFirework, 800);
+    for (let i = 0; i < 5; i++) setTimeout(createFirework, i * 200);
+  }
+  
+  /* ===== TYPING EFFECT ===== */
+  const fullMessage = "Aaj ka din meri zindagi ka sabse khaas din hai. ✨ Kyunki aaj us insaan ka janamdin hai jisne meri duniya badal di. 🫀 Meri Pyari Biwi Aneeqa, aap sirf meri biwi nahi hain — aap meri dua hain jo qubool hui. 💖 Aapki muskurahat meri subah hai, aapka saath meri sabse badi daulat hai. 🌹 Meri dua hai ke Allah aapko har khushi se nawaze. Ameen. 🤲 Happy Birthday Meri Jaan! 👑";
+  
+  let typingIndex = 0;
+  function startTyping() {
+    const target = document.getElementById('typing');
+    target.innerHTML = '';
+    typingIndex = 0;
+    typeNext();
+  }
+  function typeNext() {
+    const target = document.getElementById('typing');
+    if (typingIndex < fullMessage.length) {
+      let current = fullMessage.substring(0, typingIndex + 1);
+      target.innerHTML = current + '<span class="cursor-blink"></span>';
+      typingIndex++;
+      setTimeout(typeNext, 40);
+    } else {
+      target.innerHTML = fullMessage;
+    }
+  }
+  
+  /* ===== COUNTDOWN (Next birthday - set to 1 Jan 2027) ===== */
+  // YAHAN apni biwi ki birthday date daalein (YYYY, MM-1, DD)
+  const birthdayDate = new Date(2027, 0, 1, 0, 0, 0).getTime();
+  
+  function updateCountdown() {
+    let now = new Date().getTime();
+    let diff = birthdayDate - now;
+    if (diff < 0) {
+      document.getElementById('cd-days').textContent = '🎉';
+      document.getElementById('cd-hours').textContent = '🎉';
+      document.getElementById('cd-mins').textContent = '🎉';
+      document.getElementById('cd-secs').textContent = '🎉';
+      return;
+    }
+    let d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    let h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    let m = Math.floor((diff / (1000 * 60)) % 60);
+    let s = Math.floor((diff / 1000) % 60);
+    document.getElementById('cd-days').textContent = String(d).padStart(2, '0');
+    document.getElementById('cd-hours').textContent = String(h).padStart(2, '0');
+    document.getElementById('cd-mins').textContent = String(m).padStart(2, '0');
+    document.getElementById('cd-secs').textContent = String(s).padStart(2, '0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+  
+  /* ===== SURPRISE ===== */
+  function showSurprise(id) {
+    let el = document.getElementById(id);
+    el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    for (let i = 0; i < 30; i++) setTimeout(createFirework, i * 50);
+  }
+  
+  /* ===== MUSIC ===== */
+  let audio;
+  function playMusic() {
+    if (!audio) {
+      audio = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+      audio.loop = true;
+    }
+    if (audio.paused) audio.play();
+    else audio.pause();
+  }
+  
+  /* ===== SLIDESHOW (Photos add karne ke liye) ===== */
+  // YAHAN apni biwi ki photos ke links daalein
+  const photos = [
+    // "https://example.com/photo1.jpg",
+    // "https://example.com/photo2.jpg",
+  ];
+  
+  if (photos.length > 0) {
+    const box = document.getElementById('slideshow');
+    box.innerHTML = '';
+    photos.forEach((src, i) => {
+      let img = document.createElement('img');
+      img.src = src;
+      if (i === 0) img.classList.add('active');
+      box.appendChild(img);
+    });
+    let current = 0;
+    setInterval(() => {
+      const imgs = box.querySelectorAll('img');
+      imgs[current].classList.remove('active');
+      current = (current + 1) % imgs.length;
+      imgs[current].classList.add('active');
+    }, 3000);
+  }
+</script>
+</body>
+</html>
